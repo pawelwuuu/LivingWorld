@@ -8,7 +8,8 @@
 class DefaultInteractionManager : public IInteractionManager {
 public:
     void consume(Organism* predator, Organism* target, World& world) override {
-        if (!predator || !target) return;
+        if (predator == nullptr || target == nullptr) return;
+        if (!world.containsOrganism(predator) || !world.containsOrganism(target)) return;
 
         Animal* animalPredator = dynamic_cast<Animal*>(predator);
         if (!animalPredator) return;
@@ -33,7 +34,7 @@ public:
         if (!canEat) return;
 
         world.removeOrganism(target);
-        cout << predator->getSign() << " consumed " << target->getSign() << endl;
+        cout << predator->getSign() << " id " << std::hash<Organism*>()(predator) << " on postion " << predator->getPosition().getX() << " " << predator->getPosition().getY() << " consumed " << target->getSign() << endl;
     }
 
     void reproduce(Organism* parent, World& world) override {
