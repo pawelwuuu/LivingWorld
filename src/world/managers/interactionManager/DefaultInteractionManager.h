@@ -4,6 +4,7 @@
 #include "IInteractionManager.h"
 #include "../world/World.h"
 #include "../organism/Organism.h"
+#include <iostream>
 
 class DefaultInteractionManager : public IInteractionManager {
 public:

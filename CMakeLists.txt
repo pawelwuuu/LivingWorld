@@ -51,6 +51,10 @@ set(SOURCE_FILES
         src/organisms/plant/dandelion/Dandelion.cpp
         src/organisms/plant/toadstool/Toadstool.cpp
         src/organisms/organism/organismFactory/OrganismFactory.cpp
+        src/gui/Application.cpp
+        src/gui/Application.h
+        src/world/PopulateWorld.cpp
+        src/world/PopulateWorld.h
 )
 
 # Create single executable

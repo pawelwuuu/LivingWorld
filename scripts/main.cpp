@@ -39,3 +39,35 @@ int main(int argc, char* args []) {
     SDL_Quit();
     return 0;
 }
+
+
+//old main
+
+// int main(int argc, char* argv[])
+// {
+// 	World world(5, 5, new DefaultMovementManager(), new DefaultInteractionManager());
+//
+// 	// Automatyczne rozmieszczenie organizmów
+// 	populateWorld(world,
+// 		2,  // grass
+// 		1,  // sheep
+// 		1,  // wolf
+// 		2,  // dandelion
+// 		2   // toadstool
+// 	);
+//
+// 	// Obserwujemy świat
+// 	for (int i = 0; i < 1; ++i) {
+// 		cout << world.toString();
+// 		world.makeTurn();
+// 	}
+//
+// 	cout << world.toString();
+// 	// Zapis i przywracanie stanu
+// 	world.writeWorld("world.bin");
+// 	cout << "\nStan zapisany. Wczytujemy ponownie:\n";
+// 	world.readWorld("world.bin");
+// 	cout << world.toString();
+//
+// 	return 0;
+// }
