@@ -53,7 +53,7 @@ public:
 	std::string getSpecies() const;
 	void setSpecies(const std::string& spec);
 
-	std::string toString() const;
+	virtual std::string toString() const;
 
 	// Ruch i klonowanie
 	virtual void move(int dx, int dy);

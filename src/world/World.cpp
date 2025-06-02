@@ -250,6 +250,22 @@ std::string World::toString() {
     return result;
 }
 
+char** World::getOrganismsGrid() {
+    char** grid = new char*[getWorldY()];
+    for (int i = 0; i < getWorldY(); ++i) {
+        grid[i] = new char[getWorldX()];
+    }
+
+    for (int wY = 0; wY < getWorldY(); ++wY) {
+        for (int wX = 0; wX < getWorldX(); ++wX) {
+            std::string spec = getOrganismFromPosition(wX, wY);
+            grid[wY][wX] = spec.empty() ? separator : spec[0];
+        }
+    }
+
+    return grid;
+}
+
 // ==========================
 // Deserializacja
 // ==========================

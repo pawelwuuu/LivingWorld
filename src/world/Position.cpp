@@ -33,6 +33,9 @@ void Position::setY(int y)
 		this->y = 0;
 }
 
+int Position::getX() const { return x; }
+int Position::getY() const { return y; }
+
 string Position::toString()
 {
 	return "(" + to_string(getX()) + ", " + to_string(getY()) + ")";

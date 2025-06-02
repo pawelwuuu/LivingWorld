@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class AncestorHistory {
 public:
@@ -6,5 +7,8 @@ public:
     int deathTurn;
     AncestorHistory(int birth, int death) : birthTurn(birth), deathTurn(death) {}
 
-    std::string toString();
+    std::string toString() {
+        return "AncestorHistory{birthTurn=" + std::to_string(birthTurn)
+               + ", deathTurn=" + std::to_string(deathTurn) + "}";
+    }
 };

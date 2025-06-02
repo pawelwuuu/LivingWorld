@@ -21,4 +21,9 @@ public:
     void move(int dx, int dy);
 
     std::optional<Position> getLastPosition() const;
+
+    void deserialize(std::istream& is) override;
+    void serialize(std::ostream& os) const override;
+
+    std::string toString() const override;
 };

@@ -2,7 +2,6 @@
 #include "IMovementManager.h"
 #include "../organisms/animal/Animal.h"
 #include <algorithm>
-#include <iostream>
 #include <random>
 #include "../world/World.h"
 

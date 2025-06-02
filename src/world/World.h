@@ -20,7 +20,7 @@ private:
 
 	std::vector<std::unique_ptr<Organism>> organisms;
 
-	std::string getOrganismFromPosition(int x, int y);
+
 	bool isPositionFree(Position position);
 
 public:
@@ -51,6 +51,8 @@ public:
 	// Pozycje
 	std::vector<Position> getVectorOfAvailablePositionsAround(Position position);
 	std::vector<Position> getPositionsAround(Position position) const;
+	std::string getOrganismFromPosition(int x, int y);
+	char** getOrganismsGrid();
 
 	// IO
 	void writeWorld(std::string fileName);

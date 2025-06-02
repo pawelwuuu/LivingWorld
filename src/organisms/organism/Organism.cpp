@@ -1,6 +1,7 @@
 #include "Organism.h"
 
 #include <istream>
+#include <sstream>
 #include <utility>
 
 // === KONSTRUKTORY ===
@@ -87,9 +88,22 @@ std::string Organism::getSpecies() const { return species; }
 void Organism::setSpecies(const std::string& spec) { species = spec; }
 
 std::string Organism::toString() const {
-    return "{ species: " + getSpecies() +
-           ", power: " + std::to_string(getPower()) +
-           ", position: " + getPosition().toString() + " }";
+    std::ostringstream ss;
+    ss
+      << "Type: "       << getTypeId()
+      << ", Species: "  << getSpecies()
+      << ", Power: "    << getPower()
+      << ", Initiative: "<< getInitiative()
+      << ", Lifespan: " << getLiveLength()
+      << ", Reproduce: "<< getPowerToReproduce()
+      << ", Sign: '"    << getSign() << '\''
+      << ", Position: " << getPosition().toString();
+
+    for (auto ancestor: ancestors) {
+        ss << ", " << ancestor.toString();
+    }
+
+    return ss.str();
 }
 
 // === FUNKCJE ===

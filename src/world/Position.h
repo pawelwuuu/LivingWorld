@@ -18,6 +18,9 @@ public:
 	int getY();
 	void setY(int y);
 
+	int  getX() const;
+	int  getY() const;
+
 	string toString();
 
 	bool operator==(const Position& other) const {
