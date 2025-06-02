@@ -97,7 +97,7 @@ std::string Organism::toString() const {
       << ", Lifespan: " << getLiveLength()
       << ", Reproduce: "<< getPowerToReproduce()
       << ", Sign: '"    << getSign() << '\''
-      << ", Position: " << getPosition().toString();
+      << ", Position: " << getPosition().toString() << endl;
 
     for (auto ancestor: ancestors) {
         ss << ", " << ancestor.toString();
@@ -112,8 +112,8 @@ void Organism::move(int dx, int dy) {
     position.move(dx, dy);
 }
 
-void Organism::addAncestor(int birthTurn, int deathTurn) {
-    ancestors.emplace_back(birthTurn, deathTurn);
+void Organism::addAncestor(int birthTurn, int deathTurn, Organism* parent) {
+    ancestors.emplace_back(birthTurn, deathTurn, this, parent);
 }
 
 const std::vector<AncestorHistory>& Organism::getAncestors() const {
@@ -191,6 +191,6 @@ void Organism::deserialize(std::istream& is) {
         int birth, death;
         is.read((char*)&birth, sizeof(int));
         is.read((char*)&death, sizeof(int));
-        addAncestor(birth, death);
+        addAncestor(birth, death, nullptr);
     }
 }

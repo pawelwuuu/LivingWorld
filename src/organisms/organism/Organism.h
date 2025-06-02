@@ -17,6 +17,7 @@ protected:
 	std::vector<AncestorHistory> ancestors;
 
 public:
+	Organism* child; // todo change to protected
 	// Konstruktory
 	Organism();
 	Organism(int power, Position position);
@@ -60,7 +61,7 @@ public:
 	virtual Organism* cloneAt(Position position) const = 0;
 
 	// Historia przodków
-	void addAncestor(int birthTurn, int deathTurn);
+	void addAncestor(int birthTurn, int deathTurn, Organism* parent);
 	std::vector<AncestorHistory>& getAncestors();
 	const std::vector<AncestorHistory>& getAncestors() const;
 

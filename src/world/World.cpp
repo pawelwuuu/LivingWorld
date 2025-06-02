@@ -31,6 +31,9 @@ bool World::isPositionOnWorld(int x, int y) const {
 // ==========================
 
 void World::addOrganism(Organism* organism) {
+    if (turn == 0) {
+        organism->addAncestor(0, -1, nullptr);
+    }
     organisms.push_back(std::unique_ptr<Organism>(organism));
 }
 
@@ -55,17 +58,33 @@ void World::removeOrganism(Organism* org) {
             return ptr.get() == org;
         });
 
-    if (it != organisms.end()) {
-        // Aktualizacja historii przed usunięciem
-        auto& orgPtr = *it;
-        auto& anc = orgPtr->getAncestors();
-        if (!anc.empty() && anc.back().deathTurn == -1) {
-            anc.back().deathTurn = getTurn();  // oznacz jako zmarły
-        }
-
-        organisms.erase(it);
+    if (it == organisms.end()) {
+        return;
     }
+
+    // 1) Zaktualizuj historię samego organizmu (ostatni wpis):
+    auto& orgPtr = *it;                   // std::unique_ptr<Organism>&
+    auto& anc = orgPtr->getAncestors();   // wektor historii przodków tego organizmu
+    if (!anc.empty() && anc.back().deathTurn == -1) {
+        anc.back().deathTurn = getTurn();
+    }
+
+    // Jeśli ten organizm miał przypisanego child, spr czy istnieje
+    if (orgPtr->child != nullptr
+        && containsOrganism(orgPtr->child))
+    {
+        auto& hist = orgPtr->child->getAncestors();
+
+        for (auto& ancHist : hist) {
+            if (ancHist.parent == orgPtr.get()) {
+                ancHist.deathTurn = getTurn();
+            }
+        }
+    }
+
+    organisms.erase(it);
 }
+
 
 
 bool World::isPositionFree(Position position) {
