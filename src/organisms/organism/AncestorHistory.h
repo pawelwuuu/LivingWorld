@@ -7,9 +7,9 @@ class AncestorHistory {
 public:
     int birthTurn;
     mutable int deathTurn;
-    Organism* parent;
-    AncestorHistory(int birth, int death, Organism* self, Organism* parent) :
-        birthTurn(birth), deathTurn(death), parent(parent) {}
+    Organism* organism;
+    AncestorHistory(int birth, int death, Organism* organism) :
+        birthTurn(birth), deathTurn(death), organism(organism) {}
 
     std::string toString() {
         return "AncestorHistory{birthTurn=" + std::to_string(birthTurn)

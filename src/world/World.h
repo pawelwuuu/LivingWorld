@@ -45,6 +45,7 @@ public:
 	std::vector<Organism*> getAliveOrganisms() const;
 	std::vector<std::unique_ptr<Organism>> newOrganismsBuffer;
 	std::vector<std::unique_ptr<Organism>>& getOrganisms();
+	void propagateDeathTurn(Organism* orgPtr);
 
 	// Ruch i interakcje
 	void makeTurn();

@@ -1,8 +1,7 @@
 #include "Application.h"
 #include "PopulateWorld.h"
-#include <iostream>
-
 #include "managers/serializer/binarySerializer/BinarySerialzer.h"
+#include <iostream>
 
 Application::Application(int worldWidth, int worldHeight, int windowW, int windowH)
     : world(worldWidth, worldHeight,
@@ -12,27 +11,16 @@ Application::Application(int worldWidth, int worldHeight, int windowW, int windo
       renderer(world, windowW, windowH),
       running(true)
 {
-    // Rozmieść organizmy (przykładowe wartości można zmienić)
-    populateWorld(world,
-                  /*grassCount=*/2,
-                  /*sheepCount=*/2,
-                  /*wolfCount=*/2,
-                  /*dandelionCount=*/2,
-                  /*toadstoolCount=*/2);
-
+    populateWorld(world, 1, 3, 2, 1, 1);
 }
 
-Application::~Application() {
-    // world i renderer zniszczą kursory
-}
+Application::~Application() {}
 
-// Główna pętla aplikacji
 void Application::run() {
     while (running) {
         handleEvents();
     }
 
-    // Przed wyjściem zapiszemy i wczytamy stan świata:
     std::cout << "Zapisuję stan świata...\n";
     world.saveToFile("world.bin");
     std::cout << world.toString();
@@ -42,7 +30,34 @@ void Application::run() {
     std::cout << world.toString();
 }
 
-// Obsługa zdarzeń SDL
+void Application::handleMouseClick(int button, int x, int y) {
+    int full = renderer.getCellSize() + renderer.getMargin();
+    int cellX = x / full;
+    int cellY = y / full;
+
+    if (cellX < 0 || cellX >= world.getWorldX() || cellY < 0 || cellY >= world.getWorldY())
+        return;
+
+    Organism* org = world.getOrganismAt({cellX, cellY});
+    if (button == SDL_BUTTON_LEFT) {
+        if (org) {
+            std::string stats = org->toString();
+            std::cout << stats << std::endl;
+            SDL_ShowSimpleMessageBox(
+                SDL_MESSAGEBOX_INFORMATION,
+                "Statystyki organizmu",
+                stats.c_str(),
+                renderer.getWindow()
+            );
+        } else {
+            std::cout << "Brak organizmu w komórce (" << cellX << "," << cellY << ")\n";
+        }
+    } else if (button == SDL_BUTTON_RIGHT && org) {
+        cout << org->toString() << " REMOVED" << endl;
+        world.removeOrganism(org);
+    }
+}
+
 void Application::handleEvents() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -52,40 +67,19 @@ void Application::handleEvents() {
                 break;
 
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_SPACE) {
-                    world.makeTurn();
-                    renderer.render();
-                }
-                else if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    running = false;
+                switch (event.key.keysym.sym) {
+                    case SDLK_SPACE:
+                        world.makeTurn();
+                        renderer.render();
+                        break;
+                    case SDLK_ESCAPE:
+                        running = false;
+                        break;
                 }
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                if (event.button.button == SDL_BUTTON_LEFT) {
-                    int mx = event.button.x;
-                    int my = event.button.y;
-                    int full = renderer.getCellSize() + renderer.getMargin();
-                    int cellX = mx / full;
-                    int cellY = my / full;
-                    if (cellX >= 0 && cellX < world.getWorldX() &&
-                        cellY >= 0 && cellY < world.getWorldY()) {
-                        Organism* org = world.getOrganismAt({cellX, cellY});
-                        if (org) {
-                            std::string stats = org->toString();
-                            std::cout << stats << std::endl;
-                            SDL_ShowSimpleMessageBox(
-                                SDL_MESSAGEBOX_INFORMATION,
-                                "Statystyki organizmu",
-                                stats.c_str(),
-                                renderer.getWindow()
-                            );
-                        } else {
-                            std::cout << "Brak organizmu w komórce ("
-                                      << cellX << "," << cellY << ")\n";
-                        }
-                    }
-                }
+                handleMouseClick(event.button.button, event.button.x, event.button.y);
                 break;
 
             default:

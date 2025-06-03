@@ -112,8 +112,12 @@ void Organism::move(int dx, int dy) {
     position.move(dx, dy);
 }
 
-void Organism::addAncestor(int birthTurn, int deathTurn, Organism* parent) {
-    ancestors.emplace_back(birthTurn, deathTurn, this, parent);
+void Organism::addAncestor(int birthTurn, int deathTurn, Organism* organism) {
+    ancestors.emplace_back(birthTurn, deathTurn, organism);
+}
+
+std::vector<Organism*>& Organism::getChildren() {
+    return children;
 }
 
 const std::vector<AncestorHistory>& Organism::getAncestors() const {

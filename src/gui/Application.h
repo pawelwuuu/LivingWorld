@@ -19,4 +19,5 @@ private:
     bool running = false;
 
     void handleEvents();
+    void handleMouseClick(int button, int x, int y);
 };

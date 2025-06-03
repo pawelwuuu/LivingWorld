@@ -15,9 +15,9 @@ protected:
 	char sign;
 	std::string species;
 	std::vector<AncestorHistory> ancestors;
+	std::vector<Organism*> children;
 
 public:
-	Organism* child; // todo change to protected
 	// Konstruktory
 	Organism();
 	Organism(int power, Position position);
@@ -35,6 +35,8 @@ public:
 	// Gettery i settery
 	int getPower() const;
 	void setPower(int power);
+
+	std::vector<Organism*>& getChildren();
 
 	int getInitiative() const;
 	void setInitiative(int initiative);
@@ -61,7 +63,7 @@ public:
 	virtual Organism* cloneAt(Position position) const = 0;
 
 	// Historia przodków
-	void addAncestor(int birthTurn, int deathTurn, Organism* parent);
+	void addAncestor(int birthTurn, int deathTurn, Organism* organism);
 	std::vector<AncestorHistory>& getAncestors();
 	const std::vector<AncestorHistory>& getAncestors() const;
 

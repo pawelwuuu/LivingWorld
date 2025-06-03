@@ -47,11 +47,11 @@ public:
 
         // === ZAPISZ PRZODKÓW ===
         for (const auto& ancestor : parent->getAncestors()) {
-            child->addAncestor(ancestor.birthTurn, ancestor.deathTurn, ancestor.parent);
+            child->addAncestor(ancestor.birthTurn, ancestor.deathTurn, ancestor.organism);
         }
-        child->addAncestor(world.getTurn(), -1, parent);  // -1 = jeszcze nie umarł
+        child->addAncestor(world.getTurn(), -1, child);  // -1 = jeszcze nie umarł
 
-        parent->child = child;
+        parent->getChildren().push_back(child);
         child->setPosition(childPos);
         parent->setPower(parent->getPower() / 2);
         world.newOrganismsBuffer.push_back(std::unique_ptr<Organism>(child));
