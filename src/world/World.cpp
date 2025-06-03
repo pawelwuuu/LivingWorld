@@ -11,8 +11,8 @@
 // Konstruktory i pomocnicze
 // ==========================
 
-World::World(int worldX, int worldY, IMovementManager* movementManager, IInteractionManager* interactionManager)
-    : worldX(worldX), worldY(worldY), movementManager(movementManager), interactionManager(interactionManager) {}
+World::World(int worldX, int worldY, IMovementManager* movementManager, IInteractionManager* interactionManager, IWorldSerializer* serializer)
+    : worldX(worldX), worldY(worldY), movementManager(movementManager), interactionManager(interactionManager), serializer(serializer) {}
 
 int World::getWorldX() const { return worldX; }
 void World::setWorldX(int worldX) { this->worldX = worldX; }
@@ -21,6 +21,13 @@ int World::getWorldY() const { return worldY; }
 void World::setWorldY(int worldY) { this->worldY = worldY; }
 
 int World::getTurn() { return turn; }
+void World::setTurn(int turn) {
+    this->turn = turn;
+}
+
+void World::setSerializer(IWorldSerializer* serializer) {
+    this->serializer = serializer;
+}
 
 bool World::isPositionOnWorld(int x, int y) const {
     return (x >= 0 && y >= 0 && x < getWorldX() && y < getWorldY());
@@ -104,6 +111,10 @@ std::vector<Organism*> World::getAliveOrganisms() const {
     for (const auto& org : organisms)
         result.push_back(org.get());
     return result;
+}
+
+std::vector<std::unique_ptr<Organism>>& World::getOrganisms() {
+    return organisms;
 }
 
 std::vector<Position> World::getVectorOfAvailablePositionsAround(Position position) {
@@ -204,33 +215,6 @@ void World::makeTurn() {
 }
 
 // ==========================
-// Zapis świata
-// ==========================
-
-void World::writeWorld(std::string fileName) {
-    std::ofstream file(fileName, std::ios::out | std::ios::binary);
-    if (!file.is_open()) return;
-
-    file.write((char*)&worldX, sizeof(int));
-    file.write((char*)&worldY, sizeof(int));
-    file.write((char*)&turn, sizeof(int));
-
-    int orgCount = organisms.size();
-    file.write((char*)&orgCount, sizeof(int));
-
-    for (const auto& org : organisms) {
-        std::string typeId = org->getTypeId();
-        int typeSize = typeId.size();
-        file.write((char*)&typeSize, sizeof(int));
-        file.write(typeId.c_str(), typeSize);
-
-        org->serialize(file);
-    }
-
-    file.close();
-}
-
-// ==========================
 // Grupowanie
 // ==========================
 
@@ -286,38 +270,21 @@ char** World::getOrganismsGrid() {
 }
 
 // ==========================
-// Deserializacja
+// Deserializacja i serializacja
 // ==========================
 
-void World::readWorld(std::string fileName) {
-    std::ifstream file(fileName, std::ios::in | std::ios::binary);
-    if (!file.is_open()) return;
-
-    file.read((char*)&worldX, sizeof(int));
-    file.read((char*)&worldY, sizeof(int));
-    file.read((char*)&turn, sizeof(int));
-
-    int orgCount;
-    file.read((char*)&orgCount, sizeof(int));
-
-    organisms.clear();  // Wyczyść obecne organizmy
-
-    for (int i = 0; i < orgCount; ++i) {
-        int typeSize;
-        file.read((char*)&typeSize, sizeof(int));
-
-        std::string typeId(typeSize, ' ');
-        file.read(&typeId[0], typeSize);
-
-        auto org = OrganismFactory::getInstance().create(typeId);
-        if (!org) {
-            std::cerr << "Nieznany typ organizmu: " << typeId << std::endl;
-            continue;
-        }
-
-        org->deserialize(file);
-        addOrganism(org.release());
+void World::saveToFile(const std::string& fileName) {
+    if (!serializer) {
+        std::cerr << "Serializer nie został ustawiony!" << std::endl;
+        return;
     }
+    serializer->save(*this, fileName);
+}
 
-    file.close();
+void World::loadFromFile(const std::string& fileName) {
+    if (!serializer) {
+        std::cerr << "Serializer nie został ustawiony!" << std::endl;
+        return;
+    }
+    serializer->load(*this, fileName);
 }

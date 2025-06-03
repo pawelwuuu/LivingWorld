@@ -2,10 +2,13 @@
 #include "PopulateWorld.h"
 #include <iostream>
 
+#include "managers/serializer/binarySerializer/BinarySerialzer.h"
+
 Application::Application(int worldWidth, int worldHeight, int windowW, int windowH)
     : world(worldWidth, worldHeight,
             new DefaultMovementManager(),
-            new DefaultInteractionManager()),
+            new DefaultInteractionManager(),
+            new BinaryWorldSerializer()),
       renderer(world, windowW, windowH),
       running(true)
 {
@@ -31,11 +34,11 @@ void Application::run() {
 
     // Przed wyjściem zapiszemy i wczytamy stan świata:
     std::cout << "Zapisuję stan świata...\n";
-    world.writeWorld("world.bin");
+    world.saveToFile("world.bin");
     std::cout << world.toString();
 
     std::cout << "Wczytuję stan świata...\n";
-    world.readWorld("world.bin");
+    world.loadFromFile("world.bin");
     std::cout << world.toString();
 }
 

@@ -18,7 +18,7 @@ public:
         if (target->getSign() == 'T') {
             world.removeOrganism(target);
             world.removeOrganism(predator);
-            cout << predator->getSign() << " died of " << target->getSign() << endl;
+            cout << predator->getSign() << " id " << std::hash<Organism*>()(predator) << " on postion " << predator->getPosition().getX() << " " << predator->getPosition().getY() << " consumed T and died";
             return;
         }
 

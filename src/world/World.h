@@ -7,6 +7,7 @@
 #include "./managers/movementManager/IMovementManager.h"
 #include "./managers/interactionManager/IInteractionManager.h"
 #include "../organisms/organism/Organism.h"
+#include "managers/serializer/WorldSerializer.h"
 
 class Organism;
 class Position;
@@ -19,13 +20,12 @@ private:
 	char separator = '.';
 
 	std::vector<std::unique_ptr<Organism>> organisms;
-
+	IWorldSerializer* serializer;
 
 	bool isPositionFree(Position position);
-
 public:
 	// Konstruktor
-	World(int worldX, int worldY, IMovementManager* movementManager, IInteractionManager* interactionManager);
+	World(int worldX, int worldY, IMovementManager* movementManager, IInteractionManager* interactionManager, IWorldSerializer* serializer);
 
 	// Gettery i settery
 	int getWorldX() const;
@@ -33,6 +33,7 @@ public:
 	int getWorldY() const;
 	void setWorldY(int worldY);
 	int getTurn();
+	void setTurn(int turn);
 	bool isPositionOnWorld(int x, int y) const;
 
 	// Zarządzanie organizmami
@@ -43,6 +44,7 @@ public:
 
 	std::vector<Organism*> getAliveOrganisms() const;
 	std::vector<std::unique_ptr<Organism>> newOrganismsBuffer;
+	std::vector<std::unique_ptr<Organism>>& getOrganisms();
 
 	// Ruch i interakcje
 	void makeTurn();
@@ -55,8 +57,9 @@ public:
 	char** getOrganismsGrid();
 
 	// IO
-	void writeWorld(std::string fileName);
-	void readWorld(std::string fileName);
+	void setSerializer(IWorldSerializer* serializer);
+	void saveToFile(const std::string& fileName);
+	void loadFromFile(const std::string& fileName);
 
 	// Debug / wizualizacja
 	std::string toString();

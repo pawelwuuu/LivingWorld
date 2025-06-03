@@ -55,6 +55,9 @@ set(SOURCE_FILES
         src/gui/Application.h
         src/world/PopulateWorld.cpp
         src/world/PopulateWorld.h
+        src/world/managers/serializer/WorldSerializer.h
+        src/world/managers/serializer/binarySerializer/BinarySerialzer.cpp
+        src/world/managers/serializer/binarySerializer/BinarySerialzer.h
 )
 
 # Create single executable
